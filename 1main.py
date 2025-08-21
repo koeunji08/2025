@@ -4,12 +4,12 @@ import random
 # --- 페이지 설정 ---
 st.set_page_config(page_title="⚖️ 법 상식 퀴즈", page_icon="⚖️", layout="centered")
 
-# --- 전체 핑크 배경 적용 ---
+# --- 전체 핑크 배경 ---
 st.markdown(
     """
     <style>
     body, .stApp {
-        background-color: #FFE4E1;  /* 연한 핑크 */
+        background-color: #FFE4E1;
     }
     </style>
     """,
@@ -59,11 +59,11 @@ if st.session_state["questions"]:
         
         st.markdown(f"### 문제 {st.session_state['current_idx']+1} / {len(st.session_state['questions'])}")
         
-        # 문제 카드 핑크톤
+        # 문제 카드 핑크톤 + 글씨 검정
         st.markdown(
             f"""
             <div style='padding:20px; background-color:#FFC0CB; border-radius:15px;'>
-                <h3 style='color:#C71585;'>{current_q['q']}</h3>
+                <h3 style='color:black;'>{current_q['q']}</h3>
             </div>
             """,
             unsafe_allow_html=True
