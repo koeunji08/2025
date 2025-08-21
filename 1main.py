@@ -5,7 +5,7 @@ import random
 st.set_page_config(page_title="⚖️ 법 상식 퀴즈", page_icon="⚖️", layout="centered")
 
 # --- 헤더 ---
-st.markdown("<h1 style='text-align:center; color:#2E86C1;'>⚖️ 법 상식 퀴즈</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center; color:#2E86C1;'>⚖️ 법 상식 O/X 퀴즈</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
 # --- 문제 데이터 ---
@@ -26,36 +26,40 @@ advanced_questions = [
 ]
 
 # --- 세션 상태 초기화 ---
-for key, default in [("questions", []), ("current_idx", 0), ("user_answers", []), ("level", "기본")]:
-    if key not in st.session_state:
-        st.session_state[key] = default
+if "questions" not in st.session_state:
+    st.session_state["questions"] = []
+if "current_idx" not in st.session_state:
+    st.session_state["current_idx"] = 0
+if "user_answers" not in st.session_state:
+    st.session_state["user_answers"] = []
+if "level" not in st.session_state:
+    st.session_state["level"] = "기본"
 
 # --- 난이도 선택 ---
 level = st.radio("🔹 난이도를 선택하세요:", ["기본", "심화"], index=0)
 st.session_state["level"] = level
 
-# --- 퀴즈 시작 버튼 ---
+# --- 퀴즈 시작 ---
 if st.button("🚀 퀴즈 시작"):
     st.session_state["questions"] = random.sample(
-        basic_questions if level=="기본" else advanced_questions,
-        len(basic_questions if level=="기본" else advanced_questions)
+        basic_questions if level == "기본" else advanced_questions,
+        len(basic_questions if level == "기본" else advanced_questions)
     )
     st.session_state["user_answers"] = []
     st.session_state["current_idx"] = 0
-    st.experimental_rerun()  # 버튼 클릭 시 바로 첫 문제 표시
 
 st.markdown("---")
 
 # --- 퀴즈 진행 ---
 if st.session_state["questions"] and st.session_state["current_idx"] < len(st.session_state["questions"]):
     current_q = st.session_state["questions"][st.session_state["current_idx"]]
-
+    
     st.markdown(f"### 문제 {st.session_state['current_idx']+1} / {len(st.session_state['questions'])}")
-    st.progress((st.session_state['current_idx']+1)/len(st.session_state['questions']))
-
+    st.progress((st.session_state['current_idx'] + 1) / len(st.session_state['questions']))
+    
     st.markdown(f"<div style='padding:15px; background-color:#EAF2F8; border-radius:10px;'>"
                 f"<h3 style='color:#2E86C1;'>{current_q['q']}</h3></div>", unsafe_allow_html=True)
-
+    
     col1, col2 = st.columns(2)
     if col1.button("⭕ O"):
         st.session_state["user_answers"].append({"q": current_q['q'], "your": "O", "answer": current_q['a']})
@@ -66,31 +70,31 @@ if st.session_state["questions"] and st.session_state["current_idx"] < len(st.se
         st.session_state["current_idx"] += 1
         st.experimental_rerun()
 
-# --- 결과 요약 ---
+# --- 결과 확인 ---
 if st.session_state["questions"] and st.session_state["current_idx"] >= len(st.session_state["questions"]):
     st.markdown("---")
     st.subheader("📊 결과 요약")
-
+    
     total = len(st.session_state["user_answers"])
-    correct = sum(1 for a in st.session_state["user_answers"] if a["your"]==a["answer"])
-    accuracy = correct/total*100
-
+    correct = sum(1 for a in st.session_state["user_answers"] if a["your"] == a["answer"])
+    accuracy = correct / total * 100
+    
     st.metric("정답 개수", f"{correct} / {total}")
     st.metric("정답률", f"{accuracy:.1f}%")
-
+    
     if accuracy < 40:
         st.warning("📘 법 상식 초보 – 차근차근 공부해보세요!")
     elif accuracy < 70:
         st.info("📗 법 상식 보통 – 꽤 잘 알고 있네요!")
     else:
         st.success("📕 법 상식 마스터 – 대단합니다! 👏")
-
+    
     st.markdown("### 📝 문제와 정답 확인")
     for idx, a in enumerate(st.session_state["user_answers"], 1):
-        color = "#D4EFDF" if a['your']==a['answer'] else "#F5B7B1"
+        color = "#D4EFDF" if a["your"] == a["answer"] else "#F5B7B1"
         st.markdown(f"<div style='padding:10px; background-color:{color}; border-radius:8px;'>"
                     f"{idx}. {a['q']}  |  내 답: {a['your']}  |  정답: {a['answer']}</div>", unsafe_allow_html=True)
-
+    
     if st.button("🔄 다시 시작"):
         st.session_state["questions"] = []
         st.session_state["user_answers"] = []
