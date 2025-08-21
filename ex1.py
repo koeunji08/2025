@@ -1,2 +1,2 @@
 import streamlit as st
-st.title('뭘봐요')
+st.title('하이ㅋ')
