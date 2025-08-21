@@ -47,12 +47,11 @@ if st.button("🚀 퀴즈 시작"):
     )
     st.session_state["user_answers"] = []
     st.session_state["current_idx"] = 0
-    st.experimental_rerun()  # 시작하면 바로 첫 문제 표시
 
 st.markdown("---")
 
 # --- 퀴즈 진행 ---
-if st.session_state["current_idx"] < len(st.session_state["questions"]):
+if st.session_state["questions"] and st.session_state["current_idx"] < len(st.session_state["questions"]):
     current_q = st.session_state["questions"][st.session_state["current_idx"]]
     
     st.markdown(f"### 문제 {st.session_state['current_idx']+1} / {len(st.session_state['questions'])}")
@@ -62,21 +61,15 @@ if st.session_state["current_idx"] < len(st.session_state["questions"]):
                 f"<h3 style='color:#2E86C1;'>{current_q['q']}</h3></div>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
-    clicked = False
     if col1.button("⭕ O"):
         st.session_state["user_answers"].append({"q": current_q['q'], "your": "O", "answer": current_q['a']})
-        clicked = True
+        st.session_state["current_idx"] += 1
     if col2.button("❌ X"):
         st.session_state["user_answers"].append({"q": current_q['q'], "your": "X", "answer": current_q['a']})
-        clicked = True
-    
-    # 버튼 클릭 시 다음 문제로 안전하게 이동
-    if clicked:
         st.session_state["current_idx"] += 1
-        st.experimental_rerun()
 
 # --- 결과 요약 ---
-if st.session_state["current_idx"] >= len(st.session_state["questions"]) and st.session_state["user_answers"]:
+if st.session_state["questions"] and st.session_state["current_idx"] >= len(st.session_state["questions"]):
     st.markdown("---")
     st.subheader("📊 결과 요약")
     
@@ -104,4 +97,3 @@ if st.session_state["current_idx"] >= len(st.session_state["questions"]) and st.
         st.session_state["questions"] = []
         st.session_state["user_answers"] = []
         st.session_state["current_idx"] = 0
-        st.experimental_rerun()
