@@ -26,14 +26,9 @@ advanced_questions = [
 ]
 
 # --- 세션 상태 초기화 ---
-if "questions" not in st.session_state:
-    st.session_state["questions"] = []
-if "current_idx" not in st.session_state:
-    st.session_state["current_idx"] = 0
-if "user_answers" not in st.session_state:
-    st.session_state["user_answers"] = []
-if "level" not in st.session_state:
-    st.session_state["level"] = "기본"
+for key, default in [("questions", []), ("current_idx", 0), ("user_answers", []), ("level", "기본")]:
+    if key not in st.session_state:
+        st.session_state[key] = default
 
 # --- 난이도 선택 ---
 level = st.radio("🔹 난이도를 선택하세요:", ["기본", "심화"], index=0)
@@ -42,11 +37,12 @@ st.session_state["level"] = level
 # --- 퀴즈 시작 ---
 if st.button("🚀 퀴즈 시작"):
     st.session_state["questions"] = random.sample(
-        basic_questions if level == "기본" else advanced_questions,
-        len(basic_questions if level == "기본" else advanced_questions)
+        basic_questions if level=="기본" else advanced_questions,
+        len(basic_questions if level=="기본" else advanced_questions)
     )
     st.session_state["user_answers"] = []
     st.session_state["current_idx"] = 0
+    st.experimental_rerun()  # 버튼 클릭 시 첫 문제 바로 표시
 
 st.markdown("---")
 
@@ -55,7 +51,7 @@ if st.session_state["questions"] and st.session_state["current_idx"] < len(st.se
     current_q = st.session_state["questions"][st.session_state["current_idx"]]
     
     st.markdown(f"### 문제 {st.session_state['current_idx']+1} / {len(st.session_state['questions'])}")
-    st.progress((st.session_state['current_idx'] + 1) / len(st.session_state['questions']))
+    st.progress((st.session_state['current_idx']+1)/len(st.session_state['questions']))
     
     st.markdown(f"<div style='padding:15px; background-color:#EAF2F8; border-radius:10px;'>"
                 f"<h3 style='color:#2E86C1;'>{current_q['q']}</h3></div>", unsafe_allow_html=True)
@@ -64,11 +60,11 @@ if st.session_state["questions"] and st.session_state["current_idx"] < len(st.se
     if col1.button("⭕ O"):
         st.session_state["user_answers"].append({"q": current_q['q'], "your": "O", "answer": current_q['a']})
         st.session_state["current_idx"] += 1
-        st.experimental_rerun()
+        st.experimental_rerun()  # 클릭 시 즉시 다음 문제
     if col2.button("❌ X"):
         st.session_state["user_answers"].append({"q": current_q['q'], "your": "X", "answer": current_q['a']})
         st.session_state["current_idx"] += 1
-        st.experimental_rerun()
+        st.experimental_rerun()  # 클릭 시 즉시 다음 문제
 
 # --- 결과 확인 ---
 if st.session_state["questions"] and st.session_state["current_idx"] >= len(st.session_state["questions"]):
