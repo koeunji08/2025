@@ -108,4 +108,4 @@ if st.session_state["questions"] and st.session_state["current_idx"] >= len(st.s
     if st.button("🔄 다시 시작"):
         st.session_state["questions"] = []
         st.session_state["user_answers"] = []
-        st.session_state["current_idx"] = 0            st.session_state["current_idx"] = 0
+        st.session_state["current_idx"] = 0
