@@ -2,22 +2,10 @@ import streamlit as st
 import random
 
 # --- 페이지 설정 ---
-st.set_page_config(page_title="⚖️ 법 상식 퀴즈", page_icon="⚖️", layout="centered")
-
-# --- 전체 핑크 배경 ---
-st.markdown(
-    """
-    <style>
-    body, .stApp {
-        background-color: #FFE4E1;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+st.set_page_config(page_title="법 상식 O/X 퀴즈", page_icon="⚖️", layout="centered")
 
 # --- 헤더 ---
-st.markdown("<h1 style='text-align:center; color:#C71585;'>⚖️ 법 상식 O/X 퀴즈</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center; color:black;'>⚖️ 법 상식 O/X 퀴즈</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
 # --- 문제 데이터 ---
@@ -53,29 +41,23 @@ if st.button("🚀 퀴즈 시작"):
 st.markdown("---")
 
 # --- 퀴즈 진행 ---
-if st.session_state["questions"]:
-    if st.session_state["current_idx"] < len(st.session_state["questions"]):
-        current_q = st.session_state["questions"][st.session_state["current_idx"]]
-        
-        st.markdown(f"### 문제 {st.session_state['current_idx']+1} / {len(st.session_state['questions'])}")
-        
-        # 문제 카드 핑크톤 + 글씨 검정
-        st.markdown(
-            f"""
-            <div style='padding:20px; background-color:#FFC0CB; border-radius:15px;'>
-                <h3 style='color:black;'>{current_q['q']}</h3>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        
-        col1, col2 = st.columns(2)
-        if col1.button("⭕ O"):
-            st.session_state["user_answers"].append({"q": current_q['q'], "your": "O", "answer": current_q['a']})
-            st.session_state["current_idx"] += 1
-        if col2.button("❌ X"):
-            st.session_state["user_answers"].append({"q": current_q['q'], "your": "X", "answer": current_q['a']})
-            st.session_state["current_idx"] += 1
+if st.session_state["questions"] and st.session_state["current_idx"] < len(st.session_state["questions"]):
+    current_q = st.session_state["questions"][st.session_state["current_idx"]]
+    
+    st.markdown(f"### 문제 {st.session_state['current_idx']+1} / {len(st.session_state['questions'])}")
+    st.markdown(
+        f"<div style='padding:15px; border:1px solid black; border-radius:10px;'>"
+        f"<h3 style='color:black;'>{current_q['q']}</h3></div>",
+        unsafe_allow_html=True
+    )
+    
+    col1, col2 = st.columns(2)
+    if col1.button("⭕ O"):
+        st.session_state["user_answers"].append({"q": current_q['q'], "your": "O", "answer": current_q['a']})
+        st.session_state["current_idx"] += 1
+    if col2.button("❌ X"):
+        st.session_state["user_answers"].append({"q": current_q['q'], "your": "X", "answer": current_q['a']})
+        st.session_state["current_idx"] += 1
 
 # --- 결과 확인 ---
 if st.session_state["questions"] and st.session_state["current_idx"] >= len(st.session_state["questions"]):
@@ -98,9 +80,9 @@ if st.session_state["questions"] and st.session_state["current_idx"] >= len(st.s
     
     st.markdown("### 📝 문제와 정답 확인")
     for idx, a in enumerate(st.session_state["user_answers"], 1):
-        color = "#FFD1DC" if a["your"] == a["answer"] else "#FFB6C1"
+        color = "#DDFFDD" if a["your"] == a["answer"] else "#FFDDDD"
         st.markdown(
-            f"<div style='padding:10px; background-color:{color}; border-radius:10px;'>"
+            f"<div style='padding:10px; background-color:{color}; border-radius:5px;'>"
             f"{idx}. {a['q']}  |  내 답: {a['your']}  |  정답: {a['answer']}</div>",
             unsafe_allow_html=True
         )
