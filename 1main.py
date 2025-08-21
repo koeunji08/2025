@@ -85,9 +85,6 @@ if st.session_state["questions"] and st.session_state["current_idx"] < len(st.se
         st.session_state["current_idx"] += 1
 
 # --- 결과 요약 ---
-if st.session_state["questions"] and st.session_state["current_idx"] >= len(st.session_state["questions"]):
-    st.session_state["questions"] = []
-
 if not st.session_state["questions"] and st.session_state["user_answers"]:
     st.markdown("---")
     st.subheader("📊 결과 요약")
@@ -113,5 +110,4 @@ if not st.session_state["questions"] and st.session_state["user_answers"]:
         st.session_state["questions"] = []
         st.session_state["user_answers"] = []
         st.session_state["current_idx"] = 0
-        st.experimental_rerun()        st.session_state["user_answers"] = []
         st.experimental_rerun()
