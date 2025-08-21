@@ -9,7 +9,7 @@ st.markdown(
     """
     <style>
     body, .stApp {
-        background-color: #FFE4E1;
+        background-color: #FFE4E1;  /* 연한 핑크 */
     }
     </style>
     """,
@@ -34,12 +34,9 @@ advanced_questions = [
 ]
 
 # --- 세션 초기화 ---
-if "questions" not in st.session_state:
-    st.session_state["questions"] = []
-if "current_idx" not in st.session_state:
-    st.session_state["current_idx"] = 0
-if "user_answers" not in st.session_state:
-    st.session_state["user_answers"] = []
+for key, default in [("questions", []), ("current_idx", 0), ("user_answers", [])]:
+    if key not in st.session_state:
+        st.session_state[key] = default
 
 # --- 난이도 선택 ---
 level = st.radio("🔹 난이도를 선택하세요:", ["기본", "심화"], index=0)
@@ -56,27 +53,29 @@ if st.button("🚀 퀴즈 시작"):
 st.markdown("---")
 
 # --- 퀴즈 진행 ---
-if st.session_state["questions"] and st.session_state["current_idx"] < len(st.session_state["questions"]):
-    current_q = st.session_state["questions"][st.session_state["current_idx"]]
-    
-    st.markdown(f"### 문제 {st.session_state['current_idx']+1} / {len(st.session_state['questions'])}")
-    
-    st.markdown(
-        f"""
-        <div style='padding:20px; background-color:#FFC0CB; border-radius:15px;'>
-            <h3 style='color:#C71585;'>{current_q['q']}</h3>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-    
-    col1, col2 = st.columns(2)
-    if col1.button("⭕ O"):
-        st.session_state["user_answers"].append({"q": current_q['q'], "your": "O", "answer": current_q['a']})
-        st.session_state["current_idx"] += 1
-    if col2.button("❌ X"):
-        st.session_state["user_answers"].append({"q": current_q['q'], "your": "X", "answer": current_q['a']})
-        st.session_state["current_idx"] += 1
+if st.session_state["questions"]:
+    if st.session_state["current_idx"] < len(st.session_state["questions"]):
+        current_q = st.session_state["questions"][st.session_state["current_idx"]]
+        
+        st.markdown(f"### 문제 {st.session_state['current_idx']+1} / {len(st.session_state['questions'])}")
+        
+        # 문제 카드 핑크톤
+        st.markdown(
+            f"""
+            <div style='padding:20px; background-color:#FFC0CB; border-radius:15px;'>
+                <h3 style='color:#C71585;'>{current_q['q']}</h3>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        
+        col1, col2 = st.columns(2)
+        if col1.button("⭕ O"):
+            st.session_state["user_answers"].append({"q": current_q['q'], "your": "O", "answer": current_q['a']})
+            st.session_state["current_idx"] += 1
+        if col2.button("❌ X"):
+            st.session_state["user_answers"].append({"q": current_q['q'], "your": "X", "answer": current_q['a']})
+            st.session_state["current_idx"] += 1
 
 # --- 결과 확인 ---
 if st.session_state["questions"] and st.session_state["current_idx"] >= len(st.session_state["questions"]):
@@ -109,9 +108,4 @@ if st.session_state["questions"] and st.session_state["current_idx"] >= len(st.s
     if st.button("🔄 다시 시작"):
         st.session_state["questions"] = []
         st.session_state["user_answers"] = []
-        st.session_state["current_idx"] = 0            )
-        
-        if st.button("🔄 다시 시작"):
-            st.session_state["questions"] = []
-            st.session_state["user_answers"] = []
-            st.session_state["current_idx"] = 0
+        st.session_state["current_idx"] = 0            st.session_state["current_idx"] = 0
