@@ -7,15 +7,19 @@ st.markdown("---")
 
 # --- 퀴즈 데이터 ---
 basic_questions = [
-    {"q": "대한민국의 최고 법은 헌법이다. (O/X)", "a": "O"},
-    {"q": "헌법상 대한민국의 주권은 국민에게 있다. (O/X)", "a": "O"},
-    {"q": "대통령 선거는 4년에 한 번씩 열린다. (O/X)", "a": "X"},  # 정답: 5년
+    {"q": "대한민국의 최고 법은 헌법이다.", "a": "O"},
+    {"q": "헌법상 대한민국의 주권은 국민에게 있다.", "a": "O"},
+    {"q": "대통령 선거는 4년에 한 번씩 열린다.", "a": "X"},  # 정답: 5년
+    {"q": "대한민국은 민주공화국이다.", "a": "O"},
+    {"q": "대한민국의 수도는 부산이다.", "a": "X"},  # 정답: 서울
 ]
 
 advanced_questions = [
-    {"q": "형사재판에서 무죄가 선고되려면 '합리적 의심이 없는 증명'이 필요하다. (O/X)", "a": "O"},
-    {"q": "만 13세 미만의 청소년은 형사처벌을 받을 수 있다. (O/X)", "a": "X"},
-    {"q": "도로교통법상 보행자는 횡단보도에서 무조건 우선권이 있다. (O/X)", "a": "O"},
+    {"q": "형사재판에서 무죄가 선고되려면 '합리적 의심이 없는 증명'이 필요하다.", "a": "O"},
+    {"q": "만 13세 미만의 청소년은 형사처벌을 받을 수 있다.", "a": "X"},
+    {"q": "도로교통법상 보행자는 횡단보도에서 무조건 우선권이 있다.", "a": "O"},
+    {"q": "헌법재판소는 법률의 위헌 여부를 판단할 수 있다.", "a": "O"},
+    {"q": "대한민국 국회는 단원제로 구성되어 있다.", "a": "X"},  # 정답: 양원제
 ]
 
 # --- 세션 상태 초기화 ---
@@ -27,8 +31,10 @@ for key in ["score", "answered", "wrong", "questions"]:
 level = st.radio("🔹 난이도를 선택하세요:", ["기본", "심화"], index=0)
 
 if st.button("🚀 퀴즈 시작"):
-    st.session_state["questions"] = random.sample(basic_questions if level=="기본" else advanced_questions,
-                                                 len(basic_questions if level=="기본" else advanced_questions))
+    st.session_state["questions"] = random.sample(
+        basic_questions if level=="기본" else advanced_questions,
+        len(basic_questions if level=="기본" else advanced_questions)
+    )
     st.session_state["score"] = 0
     st.session_state["answered"] = 0
     st.session_state["wrong"] = []
@@ -42,17 +48,22 @@ if st.session_state["questions"]:
     st.subheader("❓ 문제")
     st.markdown(f"<p style='font-size:18px'>{current_q['q']}</p>", unsafe_allow_html=True)
 
-    answer = st.text_input("정답을 입력하고 아래 버튼을 눌러주세요:")
+    # O/X 버튼 선택
+    col1, col2 = st.columns(2)
+    selected_answer = None
+    if col1.button("⭕ O"):
+        selected_answer = "O"
+    if col2.button("❌ X"):
+        selected_answer = "X"
 
-    if st.button("✅ 정답 확인"):
+    if selected_answer:
         st.session_state["answered"] += 1
-        if answer.strip().upper() == current_q["a"]:
+        if selected_answer == current_q["a"]:
             st.balloons()
             st.success("🎉 정답입니다!")
             st.session_state["score"] += 1
         else:
             st.error(f"❌ 아쉽네요! 정답은: {current_q['a']}")
-
             st.session_state["wrong"].append(current_q)
 
         # 문제 제거
