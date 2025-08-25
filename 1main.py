@@ -1,119 +1,136 @@
-import React, { useState } from "react"; import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button";
+import streamlit as st
 
-const recipes = { "초코소라빵": { ingredients: [ "강력분 250g", "설탕 30g", "소금 3g", "드라이이스트 4g", "코코아 파우더 20g", "버터 30g", "우유 150ml" ], recipe: [ "재료 섞어 반죽 후 1차 발효", "소라 모양으로 성형", "초코크림 넣기", "180℃에서 15분 굽기" ], video: "https://www.youtube.com/embed/8g_2zL8iFfg" }, "소금빵": { ingredients: [ "강력분 250g", "소금 5g", "설탕 20g", "버터 40g", "드라이이스트 4g", "우유 140ml" ], recipe: [ "재료 섞어 반죽 후 발효", "길쭉하게 밀어 소라모양 성형", "버터 얹고 소금 살짝 뿌리기", "180℃에서 1515분 굽기", "버터크림 넣고 샌드" ], video: "https://www.youtube.com/embed/CkDMsMK2qD4" }, "쿠키": { ingredients: [ "박력분 200g", "설탕 100g", "버터 100g", "계란 1개", "초코칩 50g" ], recipe: [ "버터+설탕 크림화", "계란 섞고 밀가루 넣기", "초코칩 섞어 동그랗게 성형", "170℃에서 12~15분 굽기" ], video: "https://www.youtube.com/embed/6lxdGfkEPgY" } };
-
-export default function App() { const [selected, setSelected] = useState(null);
-
-return ( <div className="min-h-screen bg-gradient-to-b from-amber-200 to-orange-100 flex flex-col items-center p-6"> <h1 className="text-3xl font-bold mb-6 text-brown-700">🥐🍞 빵이랑 디저트 레시피 🍪🍰</h1>
-
-{!selected && (
-    <div className="grid grid-cols-2 gap-4">
-      {Object.keys(recipes).map((name) => (
-        <Button
-          key={name}
-          className="text-lg p-6 rounded-2xl shadow-md bg-amber-300 hover:bg-amber-400"
-          onClick={() => setSelected(name)}
-        >
-          {name} 🍩
-        </Button>
-      ))}
-    </div>
-  )}
-
-  {selected && (
-    <Card className="w-full max-w-xl bg-amber-50 shadow-lg rounded-2xl p-4">
-      <CardContent>
-        <h2 className="text-2xl font-bold mb-4">{selected} 레시피 🍴</h2>
-
-        <h3 className="text-xl font-semibold">📋 재료</h3>
-        <ul className="list-disc list-inside mb-4">
-          {recipes[selected].ingredients.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
-
-        <h3 className="text-xl font-semibold">👩‍🍳 만드는 법</h3>
-        <ol className="list-decimal list-inside mb-4">
-          {recipes[selected].recipe.map((step, i) => (
-            <li key={i}>{step}</li>
-          ))}
-        </ol>
-
-        <div className="aspect-w-16 aspect-h-9 mb-4">
-          <iframe
-            width="100%"
-            height="315"
-            src={recipes[selected].video}
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        </div>
-
-        <Button
-          className="bg-orange-300 hover:bg-orange-400 rounded-xl"
-          onClick={() => setSelected(null)}
-        >
-          ⬅️ 처음으로 돌아가기
-        </Button>
-      </CardContent>
-    </Card>
-  )}
-</div>
-
-); }
-
-# 귀여운 테마 CSS
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-color: #FFF9E6; /* 파스텔 옐로우 */
-        color: #5C4033; /* 브라운 글씨 */
-        font-family: "Comic Sans MS", "Arial Rounded MT Bold", cursive;
-    }
-    .recipe-card {
-        background-color: #FFEFD5;
-        padding: 15px;
-        border-radius: 20px;
-        text-align: center;
-        box-shadow: 2px 2px 10px #e5c9a8;
-        margin: 10px;
-    }
-    .recipe-card:hover {
-        background-color: #FFE2B7;
-        transform: scale(1.02);
-        transition: 0.2s;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
+# --- 페이지 설정 ---
+st.set_page_config(
+    page_title="🍞 오늘의 디저트 추천 🍰",
+    page_icon="🥐",
+    layout="centered"
 )
 
-# 메인 타이틀
-st.title("🍞 아기자기한 빵 레시피 도우미 🥐")
-st.markdown("**따뜻한 파스텔 옐로우 × 브라운 톤으로 준비했어요 ✨**")
+# --- 스타일 ---
+st.markdown("""
+<style>
+body {
+    background-color: #d2a679; /* 몽글몽글한 갈색 느낌 */
+}
+h1, h2, h3 {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: #fff5e6;
+    text-align: center;
+}
+.stButton>button {
+    background-color: #ffcc99;
+    color: #5a3e2b;
+    font-weight: bold;
+    border-radius: 18px;
+    padding: 12px 24px;
+    font-size: 20px;
+}
+.stSelectbox>div {
+    background-color: #ffe6cc;
+    border-radius: 12px;
+    padding: 5px;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# 첫 화면 빵 카드 보여주기
-st.subheader("오늘 어떤 빵을 만들어볼까요? 🥰")
-cols = st.columns(4)
-for i, (name, data) in enumerate(RECIPES.items()):
-    with cols[i % 4]:
-        if st.button(f"{data['emoji']} {name}", key=name):
-            st.session_state["selected"] = name
+# --- 첫 화면 타이틀 ---
+st.title("🍞🥐 오늘의 몽글몽글 디저트 🧁🍪")
+st.markdown("""
+환영해요! 🥰  
+아래에서 먹고 싶은 디저트를 선택하면,  
+귀엽게 🍩 만드는 방법과 영상이 나타나요! 🥖🍫
+""")
 
-# 선택된 빵 레시피 보여주기
-if "selected" in st.session_state:
-    choice = st.session_state["selected"]
-    recipe = RECIPES[choice]
+# --- 디저트 선택 ---
+dessert = st.selectbox(
+    "🍰 디저트를 선택해 주세요 🥯🍪:",
+    ["초코소라빵 🍫", "소금빵 🧂", "케이크 🎂", "토스트 🍞", "마카롱 🌈", "쿠키 🍪"]
+)
 
-    st.header(f"{recipe['emoji']} {choice} 레시피")
-    st.write(recipe["yield_text"])
+# --- 디저트 정보 ---
+dessert_info = {
+    "초코소라빵 🍫": {
+        "description": "부드러운 소라껍질 속에 초코슈크림이 가득한 인기 디저트예요! 🍫🥐",
+        "ingredients": ["강력분", "우유", "버터", "설탕", "이스트", "소금", "초코소스"],
+        "recipe": [
+            "1️⃣ 반죽을 준비하여 1차 발효합니다.",
+            "2️⃣ 반죽을 분할하여 둥글린 후 2차 발효합니다.",
+            "3️⃣ 초코소스를 준비하여 반죽에 채웁니다.",
+            "4️⃣ 오븐에서 구워 완성합니다! 🔥"
+        ],
+        "video": "https://www.youtube.com/watch?v=lO-ZwMgb7cY"
+    },
+    "소금빵 🧂": {
+        "description": "겉은 바삭, 속은 부드러운 소금빵이에요! 🥖",
+        "ingredients": ["강력분", "우유", "버터", "설탕", "이스트", "소금", "물"],
+        "recipe": [
+            "1️⃣ 반죽을 준비하여 1차 발효합니다.",
+            "2️⃣ 반죽을 분할하고 둥글린 후 2차 발효합니다.",
+            "3️⃣ 소금물에 담가 소금을 입힙니다.",
+            "4️⃣ 오븐에서 구워 완성! 🔥"
+        ],
+        "video": "https://www.youtube.com/watch?v=zgqGlO1hdZ4"
+    },
+    "케이크 🎂": {
+        "description": "부드럽고 촉촉한 케이크, 여러 맛으로 즐길 수 있어요! 🍰",
+        "ingredients": ["박력분", "설탕", "버터", "계란", "우유", "베이킹파우더"],
+        "recipe": [
+            "1️⃣ 재료를 준비하여 혼합합니다.",
+            "2️⃣ 반죽을 틀에 붓고 2차 발효합니다.",
+            "3️⃣ 오븐에서 구워 완성! 🔥"
+        ],
+        "video": "https://www.youtube.com/watch?v=zgqGlO1hdZ4"
+    },
+    "토스트 🍞": {
+        "description": "간단하고 맛있는 아침 토스트예요! 🥪",
+        "ingredients": ["식빵", "버터", "잼", "치즈", "햄"],
+        "recipe": [
+            "1️⃣ 식빵에 버터를 바릅니다.",
+            "2️⃣ 원하는 재료를 올리고 토스트합니다.",
+            "3️⃣ 완성된 토스트를 서빙합니다! 🍴"
+        ],
+        "video": "https://www.youtube.com/watch?v=gsVNi4Uwrp0"
+    },
+    "마카롱 🌈": {
+        "description": "부드럽고 달콤한 마카롱, 색감도 예뻐요! 🧁",
+        "ingredients": ["아몬드가루", "설탕", "계란흰자", "설탕", "버터", "식용색소"],
+        "recipe": [
+            "1️⃣ 아몬드가루와 설탕을 체에 칩니다.",
+            "2️⃣ 계란흰자를 휘핑하여 머랭을 만듭니다.",
+            "3️⃣ 머랭에 아몬드가루 혼합물을 섞어 반죽합니다.",
+            "4️⃣ 반죽을 짜서 마카롱을 만들고 건조시킵니다.",
+            "5️⃣ 오븐에서 구워 완성! 🔥"
+        ],
+        "video": "https://www.youtube.com/watch?v=Yt_YyU9A3v8"
+    },
+    "쿠키 🍪": {
+        "description": "바삭하고 달콤한 쿠키, 간식으로 최고예요! 🍪",
+        "ingredients": ["박력분", "설탕", "버터", "계란", "베이킹소다", "초콜릿칩"],
+        "recipe": [
+            "1️⃣ 재료를 준비하여 혼합합니다.",
+            "2️⃣ 반죽을 동그랗게 만들어 팬에 올립니다.",
+            "3️⃣ 오븐에서 구워 완성! 🔥"
+        ],
+        "video": "https://www.youtube.com/watch?v=F5SgFJjN2yc"
+    }
+}
 
-    # 재료표
-    st.subheader("📝 재료")
-    df = pd.DataFrame(recipe["ingredients"])
+# --- 선택한 디저트 정보 표시 ---
+if dessert:
+    st.subheader(f"{dessert} 🍰")
+    st.write(dessert_info[dessert]["description"])
+    
+    st.markdown("### 🥣 필요한 재료")
+    for ingredient in dessert_info[dessert]["ingredients"]:
+        st.write(f"- {ingredient}")
+    
+    st.markdown("### 📝 만드는 방법")
+    for step in dessert_info[dessert]["recipe"]:
+        st.write(f"- {step}")
+    
+    st.markdown("### 🎬 만드는 영상")
+    st.video(dessert_info[dessert]["video"])    df = pd.DataFrame(recipe["ingredients"])
     st.table(df)
 
     # 단계별 레시피
