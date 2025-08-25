@@ -130,6 +130,27 @@ if dessert:
         st.write(f"- {step}")
     
     st.markdown("### 🎬 만드는 영상")
+    st.video(dessert_info[dessert]["video"])            "2️⃣ 반죽을 동그랗게 만들어 팬에 올립니다.",
+            "3️⃣ 오븐에서 구워 완성! 🔥"
+        ],
+        "video": "https://www.youtube.com/watch?v=F5SgFJjN2yc"
+    }
+}
+
+# --- 선택한 디저트 정보 표시 ---
+if dessert:
+    st.subheader(f"{dessert} 🍰")
+    st.write(dessert_info[dessert]["description"])
+    
+    st.markdown("### 🥣 필요한 재료")
+    for ingredient in dessert_info[dessert]["ingredients"]:
+        st.write(f"- {ingredient}")
+    
+    st.markdown("### 📝 만드는 방법")
+    for step in dessert_info[dessert]["recipe"]:
+        st.write(f"- {step}")
+    
+    st.markdown("### 🎬 만드는 영상")
     st.video(dessert_info[dessert]["video"])    df = pd.DataFrame(recipe["ingredients"])
     st.table(df)
 
