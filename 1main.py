@@ -120,6 +120,127 @@ dessert_info = {
         "ingredients": [
             "무염버터 100g", "설탕 50g", "황설탕 50g", "계란 1개", "바닐라 익스트랙 1작은술",
             "박력분 160g", "베이킹소다 1/3작은술", "소금 한 꼬집",
+import streamlit as st
+
+# --- 페이지 설정 ---
+st.set_page_config(
+    page_title="🍞 오늘의 디저트 추천 🍰",
+    page_icon="🥐",
+    layout="centered"
+)
+
+# --- 스타일 ---
+st.markdown("""
+<style>
+body {
+    background-color: #f5e0c3; /* 연한 갈색 배경 */
+    color: black; 
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+h1, h2, h3, p {
+    color: black;
+    text-align: center;
+}
+.stButton>button {
+    background-color: #f0d8b3; 
+    color: black;
+    font-weight: bold;
+    border-radius: 18px;
+    padding: 12px 24px;
+    font-size: 20px;
+}
+.stSelectbox>div {
+    background-color: #f0e0c3; 
+    border-radius: 12px;
+    padding: 5px;
+    color: black;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# --- 첫 화면 타이틀 ---
+st.title("🍞🥐 오늘의 몽글몽글 디저트 🧁🍪")
+st.markdown("""
+환영해요! 🥰  
+아래에서 먹고 싶은 디저트를 선택하면,  
+귀엽게 🍩 만드는 방법과 영상이 나타나요! 🥖🍫
+""")
+
+# --- 디저트 선택 ---
+dessert = st.selectbox(
+    "🍰 디저트를 선택해 주세요 🥯🍪:",
+    ["초코소라빵 🍫", "소금빵 🧂", "마카롱 🌈", "쿠키 🍪", "토스트 🍞", "케이크 🎂"]
+)
+
+# --- 디저트 정보 ---
+dessert_info = {
+    "초코소라빵 🍫": {
+        "description": "촉촉한 초코 시트와 달콤한 필링이 조화된 홈베이킹 대표 메뉴입니다. 초보자도 쉽게 도전할 수 있는 레시피를 소개합니다.",
+        "ingredients": [
+            "강력분 200~250g", "설탕 25~30g", "소금 3g", "인스턴트 이스트 3~4g",
+            "우유 120~150ml", "계란 1개", "녹인 버터 10~30g", "코코아 가루 20g",
+            "무염버터 50g", "슈가파우더 50g", "코코아 가루 10g", "우유 20ml"
+        ],
+        "recipe": [
+            "1️⃣ 반죽: 강력분, 설탕, 소금을 섞은 후 따뜻한 우유에 이스트를 풀어 5분 둡니다.",
+            "2️⃣ 계란과 녹인 버터를 추가해 반죽 후 코코아 가루를 넣고 10분간 치댑니다. 1시간 1차 발효.",
+            "3️⃣ 필링: 버터를 부드럽게 풀어 슈가파우더와 코코아 가루를 섞고 우유를 넣어 부드럽게 만듭니다. 식혀서 준비.",
+            "4️⃣ 성형: 반죽을 5mm 두께로 펴 필링을 발라 돌돌 말아 1cm 간격으로 썬 후 1시간 2차 발효.",
+            "5️⃣ 굽기: 180℃ 오븐에서 15~20분 굽고, 코코아 가루를 뿌려 마무리."
+        ],
+        "tips": [
+            "촉촉함 유지: 오븐 온도와 시간을 정확히 지켜 딱딱해지지 않도록 주의.",
+            "필링 풍미: 다크/밀크 초콜릿을 혼합하거나 견과류를 추가해 고소함을 더할 수 있습니다.",
+            "성형 팁: 반죽을 너무 오래 치대지 않아야 부드러움이 유지됩니다."
+        ],
+        "video": "https://youtu.be/FaSJFZsYzEM?si=gtqDUZeEDd4emRms"
+    },
+    "소금빵 🧂": {
+        "description": "일본에서 유래한 버터 풍미의 발효빵으로, 겉바속촉 식감과 짭조름한 맛이 특징입니다.",
+        "ingredients": [
+            "강력분 200g", "박력분 100g", "설탕 25g", "소금 6g", "드라이이스트 6g",
+            "물 170ml", "버터 25g", "추가 버터 60g (냉동 보관)", "펄솔트 약간 (토핑용)"
+        ],
+        "recipe": [
+            "1️⃣ 반죽: 가루류에 이스트를 녹인 따뜻한 물을 넣고 15분간 반죽기로 치댑니다.",
+            "2️⃣ 1차 발효: 1시간 동안 따뜻한 곳에서 발효 (40℃ 유지)",
+            "3️⃣ 성형: 반죽을 6등분 후 버터를 넣고 돌돌 말아 크로아상 형태로 준비",
+            "4️⃣ 2차 발효: 50분간 따뜻한 곳에서 발효",
+            "5️⃣ 굽기: 200℃ 오븐에서 20분 굽기, 펄솔트 토핑 추가"
+        ],
+        "tips": [
+            "버터 풍미 강화: 냉동 버터를 넣어 구울 때 녹아내리면 버터 홀이 생깁니다.",
+            "에어프라이어 활용: 180℃에서 6~7분 굽거나 전자레인지 15초 데워도 맛있습니다.",
+            "변형 레시피: 치즈나 잼을 추가하거나 히말라야 핑크솔트 토핑 가능.",
+            "초보자 팁: 반죽기 사용과 충분한 발효 시간을 지키면 성공 확률 높음."
+        ],
+        "video": "https://youtu.be/OoKzyOJLygo?si=uSNS7NHAKL_y43pV"
+    },
+    "마카롱 🌈": {
+        "description": "꼬끄(반죽)와 필링(속재료)로 구성되며, 초보자도 도전할 수 있는 기본 방법과 팁을 소개합니다.",
+        "ingredients": [
+            "아몬드가루 82~92g", "슈가파우더 75~92g", "달걀흰자 63~65g",
+            "설탕 20~60g", "코코아파우더 5~7g (선택)",
+            "생크림 100g", "다크초콜릿 100g", "버터 10g", "물엿 15g"
+        ],
+        "recipe": [
+            "1️⃣ 꼬끄 준비: 아몬드가루와 슈가파우더 체에 내려 달걀흰자에 설탕 3번 나눠 넣고 머랭 만들기. 가루와 머랭 섞어 농도 조절",
+            "2️⃣ 팬닝: 짤주머니에 담아 3.5cm 팬에 짜고 30분~1시간 말려 겉마름 만들기",
+            "3️⃣ 굽기: 150~170℃ 오븐에서 13~14분 굽고 식힌 후 필링 넣어 샌드"
+        ],
+        "tips": [
+            "계란흰자 냉장보관: 3일 전 냉장해 유분 분리 방지",
+            "오븐 예열: 충분히 예열해 꼬끄 터지지 않도록",
+            "필링 선택: 초콜릿 외 레몬커드, 버터크림 활용 가능",
+            "에어프라이어: 160℃ 10분 가능, 오븐과 결과물 다를 수 있음"
+        ],
+        "video": "https://youtu.be/7A8v7t3XbxA?si=YJUEltJm7pE5lqSt"
+    },
+    "쿠키 🍪": {
+        "description": "초콜릿 칩이 들어간 대표적인 쿠키로, 겉바속촉 또는 쫀득한 식감으로 즐길 수 있습니다.",
+        "ingredients": [
+            "무염버터 100g", "설탕 50g", "황설탕 50g", "계란 1개", "바닐라 익스트랙 1작은술",
+            "박력분 160g", "베이킹소다 1/3작은술", "소금 한 꼬집",
             "초코칩 80g (다크/밀크/화이트 선택)", "견과류 (선택)"
         ],
         "recipe": [
@@ -134,7 +255,7 @@ dessert_info = {
             "보관: 실온 3~4일, 냉동 2주. 전자레인지 10초로 갓 구운 맛",
             "변형: 통밀가루 반반 사용, 버터와 코코넛오일 혼합(7:3)으로 건강하게 만들기"
         ],
-        "video": "https://www.youtube.com/watch?v=F5SgFJjN2yc"
+        "video": "https://youtu.be/00hLM-CftNg?si=aV3yY_JVqkE6oGt9"
     },
     "토스트 🍞": {
         "description": "간단하고 맛있는 햄&치즈 에그 토스트입니다. 매콤하거나 달콤한 소스로 취향에 맞게 즐길 수 있어요.",
@@ -150,7 +271,7 @@ dessert_info = {
             "매콤/달콤 소스 선택: 스리라차로 매콤하게, 연유로 달콤하게 즐기기",
             "빵 바삭하게 굽기: 토스터나 팬에 살짝 구워 식감 좋게 즐기기"
         ],
-        "video": "https://www.youtube.com/watch?v=gsVNi4Uwrp0"
+        "video": "https://youtu.be/SwYuaK3Bqac?si=3o9szJtaLppGou4D"
     },
     "케이크 🎂": {
         "description": "부드럽고 촉촉한 케이크로, 초보자도 쉽게 만들 수 있는 기본 홈베이킹 레시피입니다. 다양한 맛과 토핑으로 변형 가능해요.",
@@ -171,29 +292,27 @@ dessert_info = {
             "반죽 섞기 시 과도하게 섞지 않기: 케이크가 퍽퍽해질 수 있습니다.",
             "토핑: 생크림, 과일, 초콜릿 등 다양하게 활용 가능"
         ],
-        "video": "https://www.youtube.com/watch?v=zgqGlO1hdZ4"
+        "video": "https://youtu.be/WBll_pmvY78?si=4SK-cAG4ovcRbjD7"
     }
 }
 
 # --- 선택한 디저트 정보 표시 ---
 if dessert:
     info = dessert_info[dessert]
-    
-    st.subheader(f"{dessert} 🍰")
+    st.subheader(dessert)
     st.write(info["description"])
     
     st.markdown("### 🥣 필요한 재료")
-    df = pd.DataFrame(info["ingredients"], columns=["재료"])
-    st.table(df)
+    for ing in info["ingredients"]:
+        st.write(f"- {ing}")
     
     st.markdown("### 📝 만드는 방법")
     for step in info["recipe"]:
         st.write(f"- {step}")
     
-    if "tips" in info:
-        st.markdown("### 💡 팁")
-        for tip in info["tips"]:
-            st.write(f"- {tip}")
+    st.markdown("### 💡 팁")
+    for tip in info["tips"]:
+        st.write(f"- {tip}")
     
     st.markdown("### 🎬 만드는 영상")
     st.video(info["video"])
