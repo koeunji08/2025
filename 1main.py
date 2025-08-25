@@ -1,118 +1,68 @@
-import streamlit as st
-import pandas as pd
+import React, { useState } from "react"; import { Card, CardContent } from "@/components/ui/card"; import { Button } from "@/components/ui/button";
 
-# -----------------------------
-# 빵 레시피 데이터
-# -----------------------------
-RECIPES = {
-    "스콘": {
-        "emoji": "🫶",
-        "yield_text": "스콘 약 8개 분량",
-        "base_servings": 8,
-        "ingredients": [
-            {"재료": "박력분", "수량": 250, "단위": "g"},
-            {"재료": "베이킹파우더", "수량": 10, "단위": "g"},
-            {"재료": "버터", "수량": 80, "단위": "g"},
-            {"재료": "설탕", "수량": 40, "단위": "g"},
-            {"재료": "우유", "수량": 120, "단위": "g"},
-        ],
-        "steps": ["가루류를 체쳐서 섞기.", "차가운 버터 넣고 잘게 쪼개기.", "우유 넣고 반죽 뭉치기.", "모양 잡아 자르기.", "180℃에서 15~20분 굽기."],
-        "videos": ["https://youtu.be/cEyl4WDfkWs?si=tnB-t7Semhzd1NST"],
-    },
-    "마카롱": {
-        "emoji": "💗",
-        "yield_text": "마카롱 약 20개 분량",
-        "base_servings": 20,
-        "ingredients": [
-            {"재료": "아몬드 가루", "수량": 100, "단위": "g"},
-            {"재료": "슈가파우더", "수량": 100, "단위": "g"},
-            {"재료": "달걀 흰자", "수량": 80, "단위": "g"},
-            {"재료": "설탕", "수량": 100, "단위": "g"},
-        ],
-        "steps": ["아몬드가루와 슈가파우더 체치기.", "달걀흰자에 설탕 넣어 머랭 만들기.", "가루 넣고 마카로나주.", "짜주머니로 팬닝 후 건조.", "150℃에서 12~15분 굽기."],
-        "videos": ["https://youtu.be/XzC1aN6jpsI?si=dMtHORuvKmQpHrqt"],
-    },
-    "쿠키": {
-        "emoji": "🍪",
-        "yield_text": "쿠키 약 15개 분량",
-        "base_servings": 15,
-        "ingredients": [
-            {"재료": "버터", "수량": 100, "단위": "g"},
-            {"재료": "설탕", "수량": 80, "단위": "g"},
-            {"재료": "달걀", "수량": 1, "단위": "개"},
-            {"재료": "박력분", "수량": 200, "단위": "g"},
-            {"재료": "베이킹파우더", "수량": 5, "단위": "g"},
-            {"재료": "초코칩", "수량": 80, "단위": "g"},
-        ],
-        "steps": ["버터와 설탕 크림화.", "달걀 넣고 섞기.", "가루류 넣고 섞기.", "초코칩 넣어 반죽 완성.", "180℃에서 12분 굽기."],
-        "videos": ["https://youtu.be/ZbptGNeo-mk?si=EylMm6c7N3SJ_sra"],
-    },
-    "케이크": {
-        "emoji": "🎂",
-        "yield_text": "케이크 1호 사이즈",
-        "base_servings": 6,
-        "ingredients": [
-            {"재료": "박력분", "수량": 120, "단위": "g"},
-            {"재료": "달걀", "수량": 3, "단위": "개"},
-            {"재료": "설탕", "수량": 100, "단위": "g"},
-            {"재료": "버터", "수량": 80, "단위": "g"},
-            {"재료": "우유", "수량": 50, "단위": "g"},
-        ],
-        "steps": ["달걀과 설탕 중탕으로 거품.", "가루 넣고 섞기.", "녹인 버터와 우유 넣기.", "틀에 넣고 170℃에서 30분 굽기."],
-        "videos": ["https://youtu.be/CkkaCdEV5nY?si=3Mgjovb2MYIhXlWO"],
-    },
-    "초코소라빵": {
-        "emoji": "🥐🍫",
-        "yield_text": "초코소라빵 6개 분량",
-        "base_servings": 6,
-        "ingredients": [
-            {"재료": "강력분", "수량": 250, "단위": "g"},
-            {"재료": "설탕", "수량": 40, "단위": "g"},
-            {"재료": "소금", "수량": 5, "단위": "g"},
-            {"재료": "드라이이스트", "수량": 5, "단위": "g"},
-            {"재료": "우유", "수량": 150, "단위": "g"},
-            {"재료": "버터", "수량": 50, "단위": "g"},
-            {"재료": "초코크림", "수량": 100, "단위": "g"},
-        ],
-        "steps": ["반죽하여 1차 발효.", "분할, 둥글리기 후 휴지.", "밀대로 펴서 소라 모양 성형.", "초코크림 채우기.", "180℃에서 15분 굽기."],
-        "videos": ["https://youtu.be/FaSJFZsYzEM?si=a3TzEOu2CuQiHbog"],
-    },
-    "소금빵": {
-        "emoji": "🥨",
-        "yield_text": "소금빵 6개 분량",
-        "base_servings": 6,
-        "ingredients": [
-            {"재료": "강력분", "수량": 250, "단위": "g"},
-            {"재료": "설탕", "수량": 20, "단위": "g"},
-            {"재료": "소금", "수량": 5, "단위": "g"},
-            {"재료": "드라이이스트", "수량": 5, "단위": "g"},
-            {"재료": "우유", "수량": 150, "단위": "g"},
-            {"재료": "버터", "수량": 50, "단위": "g"},
-        ],
-        "steps": ["반죽하여 1차 발효.", "분할, 둥글리기 후 휴지.", "삼각형으로 밀어서 롤링 성형.", "소금 솔솔 뿌리기.", "180℃에서 15분 굽기."],
-        "videos": ["https://youtu.be/OoKzyOJLygo?si=Bzx4o8eiCMrBhzmg"],
-    },
-    "식빵": {
-        "emoji": "🍞",
-        "yield_text": "식빵 1개 분량",
-        "base_servings": 1,
-        "ingredients": [
-            {"재료": "강력분", "수량": 300, "단위": "g"},
-            {"재료": "설탕", "수량": 30, "단위": "g"},
-            {"재료": "소금", "수량": 5, "단위": "g"},
-            {"재료": "드라이이스트", "수량": 6, "단위": "g"},
-            {"재료": "우유", "수량": 180, "단위": "g"},
-            {"재료": "버터", "수량": 30, "단위": "g"},
-        ],
-        "steps": ["재료 섞어 반죽 만들기.", "1차 발효 (약 1시간).", "가스 빼고 성형.", "식빵틀에 넣어 2차 발효.", "180℃에서 30분 굽기."],
-        "videos": ["https://youtu.be/5dmiKojDJA8?si=6vSxsUWuw9r50nYz"],
-    },
-}
+const recipes = { "초코소라빵": { ingredients: [ "강력분 250g", "설탕 30g", "소금 3g", "드라이이스트 4g", "코코아 파우더 20g", "버터 30g", "우유 150ml" ], recipe: [ "재료 섞어 반죽 후 1차 발효", "소라 모양으로 성형", "초코크림 넣기", "180℃에서 15분 굽기" ], video: "https://www.youtube.com/embed/8g_2zL8iFfg" }, "소금빵": { ingredients: [ "강력분 250g", "소금 5g", "설탕 20g", "버터 40g", "드라이이스트 4g", "우유 140ml" ], recipe: [ "재료 섞어 반죽 후 발효", "길쭉하게 밀어 소라모양 성형", "버터 얹고 소금 살짝 뿌리기", "180℃에서 1515분 굽기", "버터크림 넣고 샌드" ], video: "https://www.youtube.com/embed/CkDMsMK2qD4" }, "쿠키": { ingredients: [ "박력분 200g", "설탕 100g", "버터 100g", "계란 1개", "초코칩 50g" ], recipe: [ "버터+설탕 크림화", "계란 섞고 밀가루 넣기", "초코칩 섞어 동그랗게 성형", "170℃에서 12~15분 굽기" ], video: "https://www.youtube.com/embed/6lxdGfkEPgY" } };
 
-# -----------------------------
-# Streamlit App
-# -----------------------------
-st.set_page_config(page_title="빵 레시피 도우미", layout="wide")
+export default function App() { const [selected, setSelected] = useState(null);
+
+return ( <div className="min-h-screen bg-gradient-to-b from-amber-200 to-orange-100 flex flex-col items-center p-6"> <h1 className="text-3xl font-bold mb-6 text-brown-700">🥐🍞 빵이랑 디저트 레시피 🍪🍰</h1>
+
+{!selected && (
+    <div className="grid grid-cols-2 gap-4">
+      {Object.keys(recipes).map((name) => (
+        <Button
+          key={name}
+          className="text-lg p-6 rounded-2xl shadow-md bg-amber-300 hover:bg-amber-400"
+          onClick={() => setSelected(name)}
+        >
+          {name} 🍩
+        </Button>
+      ))}
+    </div>
+  )}
+
+  {selected && (
+    <Card className="w-full max-w-xl bg-amber-50 shadow-lg rounded-2xl p-4">
+      <CardContent>
+        <h2 className="text-2xl font-bold mb-4">{selected} 레시피 🍴</h2>
+
+        <h3 className="text-xl font-semibold">📋 재료</h3>
+        <ul className="list-disc list-inside mb-4">
+          {recipes[selected].ingredients.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
+
+        <h3 className="text-xl font-semibold">👩‍🍳 만드는 법</h3>
+        <ol className="list-decimal list-inside mb-4">
+          {recipes[selected].recipe.map((step, i) => (
+            <li key={i}>{step}</li>
+          ))}
+        </ol>
+
+        <div className="aspect-w-16 aspect-h-9 mb-4">
+          <iframe
+            width="100%"
+            height="315"
+            src={recipes[selected].video}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
+
+        <Button
+          className="bg-orange-300 hover:bg-orange-400 rounded-xl"
+          onClick={() => setSelected(null)}
+        >
+          ⬅️ 처음으로 돌아가기
+        </Button>
+      </CardContent>
+    </Card>
+  )}
+</div>
+
+); }
 
 # 귀여운 테마 CSS
 st.markdown(
