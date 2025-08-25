@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 # --- 페이지 설정 ---
 st.set_page_config(
@@ -124,37 +125,13 @@ if dessert:
     st.write(dessert_info[dessert]["description"])
     
     st.markdown("### 🥣 필요한 재료")
-    for ingredient in dessert_info[dessert]["ingredients"]:
-        st.write(f"- {ingredient}")
+    # 재료 표로 보기
+    df = pd.DataFrame(dessert_info[dessert]["ingredients"], columns=["재료"])
+    st.dataframe(df)
     
     st.markdown("### 📝 만드는 방법")
     for step in dessert_info[dessert]["recipe"]:
         st.write(f"- {step}")
     
     st.markdown("### 🎬 만드는 영상")
-    st.video(dessert_info[dessert]["video"])# --- 선택한 디저트 정보 표시 ---
-if dessert:
-    st.subheader(f"{dessert} 🍰")
-    st.write(dessert_info[dessert]["description"])
-    
-    st.markdown("### 🥣 필요한 재료")
-    for ingredient in dessert_info[dessert]["ingredients"]:
-        st.write(f"- {ingredient}")
-    
-    st.markdown("### 📝 만드는 방법")
-    for step in dessert_info[dessert]["recipe"]:
-        st.write(f"- {step}")
-    
-    st.markdown("### 🎬 만드는 영상")
-    st.video(dessert_info[dessert]["video"])    df = pd.DataFrame(recipe["ingredients"])
-    st.table(df)
-
-    # 단계별 레시피
-    st.subheader("🥣 만드는 법")
-    for i, step in enumerate(recipe["steps"], 1):
-        st.checkbox(f"{i}. {step}", key=f"{choice}_{i}")
-
-    # 영상
-    st.subheader("🎥 영상으로 배우기")
-    for url in recipe["videos"]:
-        st.video(url)
+    st.video(dessert_info[dessert]["video"])
