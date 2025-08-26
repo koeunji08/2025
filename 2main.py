@@ -1,49 +1,64 @@
 import streamlit as st
-from io import BytesIO
 from pptx import Presentation
 from pptx.util import Inches, Pt
 
-# --- Streamlit 페이지 설정 ---
-st.set_page_config(
-    page_title="🍞 디저트 앱 발표용 PPT 🍰",
-    page_icon="🥐",
-    layout="centered"
-)
-
-st.title("🍞🥐 디저트 앱 발표용 PPT 만들기 🧁🍪")
-st.markdown("아래 버튼을 클릭하면 앱 소개 PPT 파일을 다운로드할 수 있습니다!")
+# --- 앱 제목 ---
+st.title("🍞 디저트 앱 발표 자료 만들기 🍰")
 
 # --- PPT 생성 함수 ---
 def create_ppt():
     prs = Presentation()
 
-    slides = [
-        ("🍞 오늘의 몽글몽글 디저트 앱", "Streamlit으로 만든 디저트 레시피 앱\n선택한 디저트의 레시피와 영상 제공"),
-        ("앱 기능", "디저트 선택 가능\n레시피, 재료, 팁, 영상 제공\n직관적 UI + 귀여운 디자인"),
-        ("Streamlit 기본", "import streamlit as st\nst.set_page_config(...)"),
-        ("CSS 스타일 적용", "st.markdown('''<style>...''', unsafe_allow_html=True)"),
-        ("타이틀 & 안내문", "st.title(...)\nst.markdown(...)"),
-        ("디저트 선택", "dessert = st.selectbox(..., [디저트 목록])"),
-        ("디저트 정보 저장", "딕셔너리로 레시피, 재료, 영상 저장"),
-        ("선택한 디저트 정보 표시", "st.subheader(dessert)\nst.write(info['description'])\nfor ing in info['ingredients']:\n    st.write(f'- {ing}')\nst.video(info['video'])"),
-        ("발표 포인트", "Streamlit으로 인터랙티브 앱 제작\nCSS로 디자인 커스터마이징\n딕셔너리로 데이터 구조화\nfor문으로 리스트 반복 출력")
-    ]
+    # 슬라이드 1: 제목
+    slide_layout = prs.slide_layouts[0]
+    slide = prs.slides.add_slide(slide_layout)
+    slide.shapes.title.text = "🍞 오늘의 디저트 앱"
+    slide.placeholders[1].text = "스트림릿으로 만든 디저트 추천 앱 발표 자료"
 
-    for title, content in slides:
-        slide = prs.slides.add_slide(prs.slide_layouts[1])
-        slide.shapes.title.text = title
-        slide.placeholders[1].text = content
+    # 슬라이드 2: 페이지 설정
+    slide_layout = prs.slide_layouts[1]
+    slide = prs.slides.add_slide(slide_layout)
+    slide.shapes.title.text = "1️⃣ 페이지 설정"
+    slide.placeholders[1].text = (
+        "앱 제목, 아이콘, 레이아웃을 설정\n\n"
+        "코드 예시:\n"
+        "st.set_page_config(page_title='🍞 오늘의 디저트 추천 🍰', page_icon='🥐', layout='centered')"
+    )
 
-    ppt_bytes = BytesIO()
-    prs.save(ppt_bytes)
-    ppt_bytes.seek(0)
-    return ppt_bytes
+    # 슬라이드 3: CSS 스타일
+    slide = prs.slides.add_slide(slide_layout)
+    slide.shapes.title.text = "2️⃣ CSS 스타일"
+    slide.placeholders[1].text = (
+        "앱 배경색, 글씨 색, 제목 정렬 등 디자인 적용\n\n"
+        "코드 예시:\n"
+        "st.markdown('<style>body {background-color:#f5e0c3;color:black;}</style>', unsafe_allow_html=True)"
+    )
 
-# --- 다운로드 버튼 ---
-ppt_file = create_ppt()
-st.download_button(
-    label="📥 PPT 다운로드",
-    data=ppt_file,
-    file_name="디저트앱_발표.pptx",
-    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
-)
+    # 슬라이드 4: 디저트 선택 & 정보 표시
+    slide = prs.slides.add_slide(slide_layout)
+    slide.shapes.title.text = "3️⃣ 디저트 선택 & 정보 표시"
+    slide.placeholders[1].text = (
+        "- st.selectbox()로 디저트 선택\n"
+        "- 딕셔너리에 재료, 레시피, 팁, 영상 링크 저장\n"
+        "- for문으로 재료/레시피/팁 출력\n"
+        "- st.video()로 유튜브 영상 표시"
+    )
+
+    # 슬라이드 5: 주요 코드 포인트
+    slide = prs.slides.add_slide(slide_layout)
+    slide.shapes.title.text = "4️⃣ 주요 코드 포인트"
+    slide.placeholders[1].text = (
+        "1. 스트림릿 기본 함수 사용 (st.title, st.markdown, st.selectbox, st.write, st.video)\n"
+        "2. 딕셔너리로 레시피 데이터 구조화\n"
+        "3. for문 반복 처리로 정보 출력\n"
+        "4. CSS로 디자인 커스터마이징"
+    )
+
+    return prs
+
+# --- PPT 다운로드 버튼 ---
+if st.button("📥 발표용 PPT 만들기"):
+    prs = create_ppt()
+    prs.save("디저트_앱_발표.pptx")
+    st.success("✅ PPT 파일이 생성되었습니다! 다운로드 버튼 사용 가능")
+    st.markdown("[다운로드 PPT](디저트_앱_발표.pptx)")
