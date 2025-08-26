@@ -19,13 +19,18 @@ h1, h2, h3, p {
     color: black;
     text-align: left;
 }
+.stButton>button {
+    background-color: #f0d8b3;
+    color: black;
+    font-weight: bold;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 18px;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# --- 제목 ---
-st.title("스트림릿 앱 – 핵심 코드 요약")
-
-# --- 핵심 코드 설명 ---
+# --- 슬라이드 데이터 ---
 slides = [
     ("앱 설정", "`st.set_page_config()` → 앱 제목, 아이콘, 레이아웃을 설정"),
     ("디자인 꾸미기", "`st.markdown(<style>)` → 글자 색, 배경색, 폰트 등 디자인 적용"),
@@ -36,7 +41,23 @@ slides = [
     ("영상 삽입", "`st.video()` → 유튜브 영상 앱에 삽입")
 ]
 
-# --- 슬라이드별 출력 ---
-for i, (title, desc) in enumerate(slides, 1):
-    st.subheader(f"{i}. {title}")
-    st.write(desc)
+# --- 세션 상태 초기화 ---
+if 'slide_index' not in st.session_state:
+    st.session_state.slide_index = 0
+
+# --- 현재 슬라이드 표시 ---
+slide_index = st.session_state.slide_index
+title, desc = slides[slide_index]
+st.subheader(f"{slide_index + 1}. {title}")
+st.write(desc)
+
+# --- 버튼으로 슬라이드 이동 ---
+col1, col2 = st.columns([1, 1])
+with col1:
+    if st.button("⬅ 이전"):
+        if st.session_state.slide_index > 0:
+            st.session_state.slide_index -= 1
+with col2:
+    if st.button("다음 ➡"):
+        if st.session_state.slide_index < len(slides) - 1:
+            st.session_state.slide_index += 1
